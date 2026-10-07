@@ -8,5 +8,8 @@ The <spec> value can be either
  - a comma-separated list of hg hashes in the full form (40
    hexadecimal characters) to drop the corresponding changesets, or
 
+ - a similar list as above, preceded by a dot ('.'), to keep *only*
+   the corresponding changesets, or
+
  - a regular expression pattern to drop all changesets with matching
    descriptions.

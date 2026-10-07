@@ -4,6 +4,9 @@ import sys, re
 
 
 def build_filter(args):
+    if re.match(r'[.]([A-Fa-f0-9]{40}(,|$))+$', args):
+        args = args[1:]
+        return PositiveRevisionIdFilter(args.split(','))
     if re.match(r'([A-Fa-f0-9]{40}(,|$))+$', args):
         return RevisionIdFilter(args.split(','))
     else:
@@ -40,6 +43,16 @@ class FilterBase(object):
 
     def should_drop_commit(self, commit_data):
         return False
+
+
+class PositiveRevisionIdFilter(FilterBase):
+    def __init__(self, revision_hash_list):
+        super(PositiveRevisionIdFilter, self).__init__()
+        self.wanted_hg_hashes = {h.encode('ascii', 'strict')
+                                   for h in revision_hash_list}
+
+    def should_drop_commit(self, commit_data):
+        return commit_data['hg_hash'] not in self.wanted_hg_hashes
 
 
 class RevisionIdFilter(FilterBase):
